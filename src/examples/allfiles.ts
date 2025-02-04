@@ -59,10 +59,7 @@ const doWork = async () => {
         onProcessNode: (node) => {
           for (const check of node.lintChecks) {
             // example: show the text linting results and suggestions
-            if (
-              check.checkName === "Text-Style" &&
-              check.matchLevel === "Partial"
-            ) {
+            if (check.checkName === "Text-Style" && check.matchLevel === "Partial") {
               // console.log(check.suggestions);
             }
           }
@@ -80,11 +77,28 @@ const doWork = async () => {
 
   // write all pages to disk in case something goes wrong, so we don't have to reload everything again
   const json = JSON.stringify(allPages, null, 2);
-  //const fileName = `./all-pages.json`;
-  //fs.writeFileSync(fileName, json);
+  // console.log(json);
+  fs.writeFileSync("./figma-all-pages.json", json);
 
   const teamBreakdown = figmaCalculator.getBreakDownByTeams(allPages);
-  console.log(JSON.stringify(teamBreakdown));
+  // console.log(JSON.stringify(teamBreakdown));
+  fs.writeFileSync("./figma-team-breakdown.json", JSON.stringify(teamBreakdown, null, 2));
+
+  const load1 = await figmaCalculator.loadComponents(STYLE_TEAM_ID);
+  // console.log("Loaded Components",load1);
+  fs.writeFileSync("./figma-components.json", JSON.stringify(load1, null, 2));
+
+  const load2 = await figmaCalculator.loadStyles(STYLE_TEAM_ID);
+  // console.log("Loaded Styles",load2);
+  fs.writeFileSync("./figma-styles.json", JSON.stringify(load2, null, 2));
+
+  const load3 = await figmaCalculator.loadLocalVariables(STYLE_TEAM_ID);
+  // console.log("Loaded Local Variables",load3);
+  fs.writeFileSync("./figma-local-variables.json", JSON.stringify(load3, null, 2));
+
+  const load4 = await figmaCalculator.loadPublishedVariables(STYLE_TEAM_ID);
+  // console.log("Loaded Published Variables",load4);
+  fs.writeFileSync("./figma-published-variables.json", JSON.stringify(load4, null, 2));
 };
 
 doWork();
